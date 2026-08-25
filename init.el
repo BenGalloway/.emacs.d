@@ -234,9 +234,11 @@
     "n f" '(org-roam-node-find :wk "Find/create note")
     "n i" '(org-roam-node-insert :wk "Insert link to note")
     "n I" '(org-id-get-create :wk "Create ID")
-
     "n b" '(org-roam-buffer-toggle :wk "Show backlinks")
     "n r" '(org-refile :wk "Refile Tree")
+    "n d" '(:ignore t :wk "date")
+    "n d t" '(org-timestamp-inactive :wk "Timestamp inactive")
+    "n d T" '(org-timestamp :wk "Timestamp")
 
     "o"   '(:ignore t :wk "open")
     "o a" '(org-agenda :wk "Agenda")
@@ -304,7 +306,11 @@
   :custom
   (org-directory "~/org/")
   (org-agenda-files (list org-directory))
-  (org-ellipsis " ▾")
+  (org-ellipsis "▾")
+  (org-refile-targets '((nil :maxlevel . 9)
+                        (org-agenda-files :maxlevel . 9)))
+  (org-refile-use-outline-path 'file)
+  (org-outline-path-complete-in-steps nil)
   (org-hide-emphasis-markers t)     ; hide the *bold*/_underline_ markers
   (org-pretty-entities t)
   (org-startup-indented t)
@@ -321,7 +327,7 @@
    '(("t" "Todo" entry
       (file+headline (lambda () (expand-file-name "inbox.org" org-directory)) "Inbox")
       "* TODO %?\n%U\n%a" :empty-lines 1))))
-
+(setq org-return-follow-link t)
 ;; Reveals raw markup (*, _, [[links]]) only around point, and hides it
 ;; again everywhere else -- the pairing that makes `org-hide-emphasis-markers'
 ;; livable, since you can still edit the markup when your cursor is on it.
@@ -367,6 +373,11 @@
    (org-roam-database-connector 'sqlite-builtin)
    :config
    (org-roam-db-autosync-mode 1))
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :if-new (file+head "${slug}.org"
+                            "#+title: ${title}\n")
+         :unnarrowed t)))
 
 (provide 'init)
 ;;; init.el ends here
