@@ -306,7 +306,12 @@
   :ensure nil
   :custom
   (org-directory "~/org/")
+  ;; NOTE: if you keep your notes under a different top-level dir than
+  ;; ~/org/ (e.g. ~/org-roam/), add it here so org-id can resolve id:
+  ;; links from work.org to notes.org.
   (org-agenda-files (list org-directory))
+  (org-id-track-globally t)
+  (org-id-locations-file (expand-file-name ".orgids" org-directory))
   (org-ellipsis "▾")
   (org-refile-targets '((nil :maxlevel . 9)
                         (org-agenda-files :maxlevel . 9)))
@@ -327,9 +332,27 @@
   (org-capture-templates
    '(("t" "Todo" entry
       (file+headline (lambda () (expand-file-name "inbox.org" org-directory)) "Inbox")
-      "* TODO %?\n%U\n%a" :empty-lines 1))))
-(setq org-return-follow-link t)
+      "* TODO %?\n%U\n%a" :empty-lines 1)))
+  ;; Make RET follow links (e.g. id: links to notes.org from work.org).
+  ;; Note: the variable is `org-return-follows-link' (with an "s") -- the
+  ;; typo `org-return-follow-link' is silently ignored.
+  (org-return-follows-link t))
+
+;; In evil's normal/motion state, RET is bound to `evil-ret' which shadows
+;; `org-return'.  Unbind it there so `org-return' (and thus org-return-follows-link)
+;; takes over.  Insert-state RET is already `org-return' via evil-collection, but
+;; we add it explicitly to be safe.
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-normal-state-map (kbd "RET") 'org-return))
+
 (add-hook 'org-mode-hook 'visual-line-mode)
+
+;; Make sure org-id is loaded so `id:' links (the ones inserted by
+;; `org-roam-node-insert' / `org-id-get-create') can be resolved between
+;; work.org and notes.org.
+(with-eval-after-load 'org
+  (require 'org-id))
 ;; Reveals raw markup (*, _, [[links]]) only around point, and hides it
 ;; again everywhere else -- the pairing that makes `org-hide-emphasis-markers'
 ;; livable, since you can still edit the markup when your cursor is on it.
@@ -371,10 +394,13 @@
  (use-package org-roam
    :after org
    :custom
-   (org-roam-directory (expand-file-name "~/Org/"))
+   (org-roam-directory (expand-file-name "~/org/"))
    (org-roam-database-connector 'sqlite-builtin)
    :config
-   (org-roam-db-autosync-mode 1))
+   (org-roam-db-autosync-mode 1)
+   ;; Make org-id aware of roam files too, so `id:' links to any node
+   ;; resolve even before the target file has been visited.
+   (setq org-id-extra-files (directory-files-recursively org-roam-directory "\\.org$")))
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
          :if-new (file+head "${slug}.org"
