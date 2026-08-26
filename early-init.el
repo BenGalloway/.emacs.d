@@ -6,7 +6,8 @@
 ;; `file-name-handler-alist' and subprocess IO settings are costly.
 
 ;;; Code:
-
+(setq user-emacs-directory (expand-file-name "~/.emacs.d/"))
+(setq package-user-dir (expand-file-name "elpa/" user-emacs-directory))
 ;; --- Garbage collection --------------------------------------------------
 ;; Raise the GC threshold to (near) infinity during startup so Emacs
 ;; doesn't pause to collect while loading packages.  `gcmh' (in init.el)

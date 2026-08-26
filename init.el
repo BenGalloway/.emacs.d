@@ -13,7 +13,7 @@
 ;; as you find gaps.
 
 ;;; Code:
-
+(setq package-check-signature nil)
 ;; ===========================================================================
 ;; Package management
 ;; ===========================================================================
@@ -239,6 +239,7 @@
     "n d" '(:ignore t :wk "date")
     "n d t" '(org-timestamp-inactive :wk "Timestamp inactive")
     "n d T" '(org-timestamp :wk "Timestamp")
+    "n e" '(org-export-dispatch :wk "Export Current Selection")
 
     "o"   '(:ignore t :wk "open")
     "o a" '(org-agenda :wk "Agenda")
