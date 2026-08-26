@@ -329,6 +329,7 @@
       (file+headline (lambda () (expand-file-name "inbox.org" org-directory)) "Inbox")
       "* TODO %?\n%U\n%a" :empty-lines 1))))
 (setq org-return-follow-link t)
+(add-hook 'org-mode-hook 'visual-line-mode)
 ;; Reveals raw markup (*, _, [[links]]) only around point, and hides it
 ;; again everywhere else -- the pairing that makes `org-hide-emphasis-markers'
 ;; livable, since you can still edit the markup when your cursor is on it.
@@ -370,7 +371,7 @@
  (use-package org-roam
    :after org
    :custom
-   (org-roam-directory (expand-file-name "~/org/"))
+   (org-roam-directory (expand-file-name "~/Org/"))
    (org-roam-database-connector 'sqlite-builtin)
    :config
    (org-roam-db-autosync-mode 1))
