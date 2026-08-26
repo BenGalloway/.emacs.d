@@ -240,6 +240,7 @@
     "n d t" '(org-timestamp-inactive :wk "Timestamp inactive")
     "n d T" '(org-timestamp :wk "Timestamp")
     "n e" '(org-export-dispatch :wk "Export Current Selection")
+    "n t" '(org-todo :wk "Insert TODO at point")
 
     "o"   '(:ignore t :wk "open")
     "o a" '(org-agenda :wk "Agenda")
@@ -305,8 +306,10 @@
 (use-package org
   :ensure nil
   :custom
-  (org-directory "~/org/")
+  (org-directory "~/Org/")
   (org-agenda-files (list org-directory))
+  (org-id-track-globally t)
+  (org-id-locations-file(expand-file-name ".orgids" org-directory))
   (org-ellipsis "▾")
   (org-refile-targets '((nil :maxlevel . 9)
                         (org-agenda-files :maxlevel . 9)))
@@ -326,9 +329,14 @@
      (sequence "WAIT(w)" "|" "CANCELLED(c)")))
   (org-capture-templates
    '(("t" "Todo" entry
-      (file+headline (lambda () (expand-file-name "inbox.org" org-directory)) "Inbox")
-      "* TODO %?\n%U\n%a" :empty-lines 1))))
-(setq org-return-follow-link t)
+      (file+headline (lambda () (expand-file-name "notes.org" org-directory)) "Inbox")
+      "* TODO %?\n%U\n%a" :empty-lines 1)))
+  (org-return-follows-link t))
+(with-eval-after-load 'evil-maps
+  (define-key evil-motion-state-map (kbd "RET") nil)
+  (define-key evil-normal-state-map (kbd "RET") 'org-return))
+(with-eval-after-load 'org
+  (require 'org-id))
 (add-hook 'org-mode-hook 'visual-line-mode)
 ;; Reveals raw markup (*, _, [[links]]) only around point, and hides it
 ;; again everywhere else -- the pairing that makes `org-hide-emphasis-markers'
@@ -354,14 +362,6 @@
   (org-modern-table-horizontal 0.2)
   (org-modern-list '((?- . "•") (?+ . "◦"))))
 
- ;; ===========================================================================
-;; Notes: Denote
-;; ===========================================================================
-;; Chosen over org-roam for this setup: no database, no emacsql, nothing
-;; to compile -- just plain files with a predictable naming scheme. That
-;; matches "barebones and snappy" better on Windows, where org-roam's
-;; SQLite dependency is one more thing that can go sideways.
-
 ;; --- Alternative: org-roam instead of Denote -------------------------------
 ;; If you try Denote and end up wanting org-roam's graph/backlink buffer
 ;; instead, delete the `denote' and `consult-notes' blocks above and use
@@ -374,7 +374,9 @@
    (org-roam-directory (expand-file-name "~/Org/"))
    (org-roam-database-connector 'sqlite-builtin)
    :config
-   (org-roam-db-autosync-mode 1))
+   (org-roam-db-autosync-mode 1)
+   (setq org-id-extra-files (directory-files-recursively org-roam-directory "\\.org$")))
+
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
          :if-new (file+head "${slug}.org"
