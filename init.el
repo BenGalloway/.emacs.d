@@ -377,6 +377,17 @@
    (org-roam-db-autosync-mode 1)
    (setq org-id-extra-files (directory-files-recursively org-roam-directory "\\.org$")))
 
+(add-to-list 'display-buffer-alist
+             '(\\"*org-roam\\"
+               (display-buffer-in-side-window)
+               (side . right)
+               (window-widgth . 0.33)
+               (window-parameters . ((no-other-window . t)
+                                     (no-delete other-windows . t)))))
+
+(with-eval-after-load 'org-roam
+  (set-face-attribute 'org-roam-olp nil :foreground "#61afef"))
+
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
          :if-new (file+head "${slug}.org"
