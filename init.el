@@ -235,6 +235,7 @@
     "n i" '(org-roam-node-insert :wk "Insert link to note")
     "n I" '(org-id-get-create :wk "Create ID")
     "n b" '(org-roam-buffer-toggle :wk "Show backlinks")
+    "n B" '(org-roam-buffer-display-dedicated :wk "Show dedicated Backlinks")
     "n r" '(org-refile :wk "Refile Tree")
     "n d" '(:ignore t :wk "date")
     "n d t" '(org-timestamp-inactive :wk "Timestamp inactive")
@@ -401,6 +402,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("~/Org/notes.org" "c:/Users/Ben Galloway/Org/Dystopia.org"
+     "c:/Users/Ben Galloway/Org/chain_vs_circle.org"
+     "c:/Users/Ben Galloway/Org/dear diary.org"
+     "c:/Users/Ben Galloway/Org/grit.org"
+     "c:/Users/Ben Galloway/Org/paradigms.org"
+     "c:/Users/Ben Galloway/Org/personal.org"
+     "c:/Users/Ben Galloway/Org/range.org"
+     "c:/Users/Ben Galloway/Org/shouting_into_the_void_lessons_from_a_space_opera.org") nil nil "Customized with use-package org")
  '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
