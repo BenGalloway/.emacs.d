@@ -105,7 +105,7 @@
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-material-dark t)
+  (load-theme 'doom-badger t)
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
